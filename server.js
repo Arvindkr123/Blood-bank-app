@@ -4,7 +4,12 @@ import dotenv from 'dotenv';
 import colors from 'colors';
 import morgan from 'morgan';
 import cors from 'cors';
+import connectDB from './config/db.js';
+
+
 dotenv.config();
+// connection to mongoose database
+connectDB();
 const app = express();
 app.use(cors());
 app.use(express.json());

@@ -71,3 +71,22 @@ export const loginController = async (req, res) => {
       .send({ success: false, message: 'Error in Login Api', error });
   }
 };
+
+// GET CURRENT USER CONTROLLER
+export const getCurrentUserController = async (req, res) => {
+  try {
+    const user = await UserModel.findOne({ _id: req.body.userId });
+    return res.status(200).send({
+      success: true,
+      message: 'user fetch successfully',
+      user,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      success: false,
+      message: 'unable to get current user',
+      error,
+    });
+  }
+};

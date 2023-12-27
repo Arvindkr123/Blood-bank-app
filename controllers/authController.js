@@ -41,6 +41,13 @@ export const loginController = async (req, res) => {
         .send({ success: false, message: 'User not found' });
     }
 
+    // check role
+    if (existingUser.role !== req.body.role) {
+      return res
+        .status(500)
+        .send({ success: false, message: 'role does not match' });
+    }
+
     // if user exists then comparing password
     const comparePassword = await bcrypt.compare(
       req.body.password,

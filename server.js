@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import authRouter from './routes/authRoutes.js';
+import inventoryRouter from './routes/inventoryRoutes.js';
 
 dotenv.config();
 // connection to mongoose database
@@ -18,6 +19,7 @@ app.use(morgan('dev'));
 // test routes
 app.use('/api/v1', testRouter);
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/inventory', inventoryRouter);
 
 // port
 const PORT = process.env.PORT || 8080;

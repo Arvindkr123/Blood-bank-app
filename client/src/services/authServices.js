@@ -1,10 +1,14 @@
+import { userLogin } from '../redux/feature/auth/authActions';
+import store from '../redux/store';
+
 export const loginHandler = (e, email, password, role) => {
   e.preventDefault();
   try {
     if (!email || !password || !role) {
       return alert('please enter all fields');
     }
-    console.log('login', e, email, password, role);
+    // console.log('login', e, email, password, role);
+    store.dispatch(userLogin({ email, password, role }));
   } catch (error) {
     console.log(error);
   }

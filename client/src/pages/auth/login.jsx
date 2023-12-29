@@ -1,6 +1,18 @@
 import React from 'react';
 import Form from '../../components/shared/form/Form';
+import { useSelector } from 'react-redux';
+import SpinnerLoader from '../../components/shared/SpinnerLoader';
+import { toast } from 'react-toastify';
 const Login = () => {
+  const { loading, error } = useSelector((state) => state.auth);
+  if (loading) {
+    <SpinnerLoader></SpinnerLoader>;
+  }
+
+  if (error) {
+    toast.error(error);
+  }
+
   return (
     <>
       <div className="row g-0">

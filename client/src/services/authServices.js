@@ -1,4 +1,4 @@
-import { userLogin } from '../redux/feature/auth/authActions';
+import { userLogin, userRegister } from '../redux/feature/auth/authActions';
 import store from '../redux/store';
 
 export const loginHandler = (e, email, password, role) => {
@@ -28,18 +28,18 @@ export const registerHandler = (
 ) => {
   e.preventDefault();
   try {
-    console.log(
-      'register',
-      e,
-      name,
-      role,
-      email,
-      password,
-      phone,
-      orgnizationName,
-      hospitalName,
-      website,
-      address
+    store.dispatch(
+      userRegister({
+        name,
+        role,
+        email,
+        password,
+        phone,
+        orgnizationName,
+        hospitalName,
+        website,
+        address,
+      })
     );
   } catch (error) {
     console.log(error);

@@ -46,3 +46,25 @@
     transform: rotate(360deg);
   }
 }
+
+/* =========================================
+      Navbar Style
+==========================================*/
+.navbar {
+  background: black !important;
+  color: white !important;
+}
+
+.navbar-brand {
+  color: white;
+}
+.nav-link {
+  color: white;
+}
+
+.navbar-brand:hover {
+  color: rgb(212, 220, 226) !important;
+}
+.nav-link:hover {
+  color: rgb(212, 220, 226) !important;
+}

@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { UserModel } from '../models/userModel.js';
 import InventoryModel from './../models/inventoryModel.js';
 
@@ -14,20 +15,74 @@ export const addInventoryController = async (req, res) => {
         user,
       });
     }
-    if (inventoryType === 'in' && user.role !== 'donar') {
-      return res.status(500).send({
-        success: false,
-        message: 'this is not donar account',
-        user,
-      });
+
+    if (req.body.inventoryType === 'out') {
+      const requestedBloodGroup = req.body.bloodGroup;
+      const requestedQuantityOfBlood = req.body.quantity;
+      const organization = new mongoose.Types.ObjectId(req.body.userId);
+      // calculate the blood in quantity
+      const totalRequestedInBoodQuantity = await InventoryModel.aggregate([
+        {
+          $match: {
+            organization,
+            inventoryType: 'in',
+            bloodGroup: requestedBloodGroup,
+          },
+        },
+        {
+          $group: {
+            _id: '$bloodGroup',
+            total: { $sum: '$quantity' },
+          },
+        },
+      ]);
+      // console.log(totalBoodQuantity);
+      // calculate total blood out quantity
+      const totalOutOfRequestedBloodGroup = await InventoryModel.aggregate([
+        {
+          $match: {
+            organization,
+            inventoryType: 'out',
+            bloodGroup: requestedBloodGroup,
+          },
+        },
+        {
+          $group: {
+            _id: 'bloodGroup',
+            total: { $sum: '$quantity' },
+          },
+        },
+      ]);
+      let totalIn = totalRequestedInBoodQuantity[0]?.total || 0;
+      let totalOut = totalOutOfRequestedBloodGroup[0]?.total || 0;
+
+      // in and out blood quantity calculations
+      const availableQuantityofBloodGroup = totalIn - totalOut;
+      // qauntity validation
+      if (availableQuantityofBloodGroup < requestedQuantityOfBlood) {
+        return res.status(500).send({
+          success: false,
+          message: `Only ${availableQuantityofBloodGroup}ML of ${requestedBloodGroup.toUpperCase()} is available`,
+        });
+      }
+
+      req.body.hospital = user?._id;
     }
-    if (inventoryType === 'out' && user.role !== 'hospital') {
-      return res.status(500).send({
-        success: false,
-        message: 'this is not hospital account',
-        user,
-      });
-    }
+
+    // if (inventoryType === 'in' && user.role !== 'donar') {
+    //   return res.status(500).send({
+    //     success: false,
+    //     message: 'this is not donar account',
+    //     user,
+    //   });
+    // }
+    // if (inventoryType === 'out' && user.role !== 'hospital') {
+    //   return res.status(500).send({
+    //     success: false,
+    //     message: 'this is not hospital account',
+    //     user,
+    //   });
+    // }
 
     // save record
     const inventory = new InventoryModel(req.body);
